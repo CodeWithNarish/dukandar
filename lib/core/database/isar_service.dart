@@ -22,24 +22,12 @@ class IsarService {
       isar = mockDb;
     } else {
       final dirPath = await getDirectoryPath();
-      try {
-        isar = await Isar.open(
-          [
-            ProductModelSchema,
-            HistoryModelSchema,
-            ShopProfileModelSchema,
-            SettingsModelSchema,
-          ],
-          directory: dirPath,
-          name: 'dukandar_db',
-          inspector: false, // Prevents certain issues in release mode
-        );
-      } catch (e) {
-        print('❌ Isar initialization failed: $e');
-        if (e.toString().contains('Collection id is invalid') || e.toString().contains('IllegalArg')) {
-          print('🔧 Detected schema mismatch — attempting recovery...');
-          await recoverDatabase();
-          // Retry
+      final name = 'dukandar_db';
+      
+      if (Isar.getInstance(name) != null) {
+        isar = Isar.getInstance(name)!;
+      } else {
+        try {
           isar = await Isar.open(
             [
               ProductModelSchema,
@@ -48,12 +36,38 @@ class IsarService {
               SettingsModelSchema,
             ],
             directory: dirPath,
-            name: 'dukandar_db',
-            inspector: false,
+            name: name,
+            inspector: false, // Prevents certain issues in release mode
           );
-          print('✅ Recovery successful — fresh database created');
-        } else {
-          rethrow;
+        } catch (e) {
+          print('❌ Isar initialization failed: $e');
+          if (e.toString().contains('Collection id is invalid') || 
+              e.toString().contains('IllegalArg') || 
+              e.toString().contains('already been opened')) {
+            print('🔧 Detected schema mismatch or locked instance — attempting recovery...');
+            
+            final activeInstance = Isar.getInstance(name);
+            if (activeInstance != null) {
+              await activeInstance.close();
+            }
+            
+            await recoverDatabase();
+            // Retry
+            isar = await Isar.open(
+              [
+                ProductModelSchema,
+                HistoryModelSchema,
+                ShopProfileModelSchema,
+                SettingsModelSchema,
+              ],
+              directory: dirPath,
+              name: name,
+              inspector: false,
+            );
+            print('✅ Recovery successful — fresh database created');
+          } else {
+            rethrow;
+          }
         }
       }
     }
