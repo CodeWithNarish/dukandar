@@ -2,6 +2,9 @@
 // Stub for web platform
 
 Future<String> getDirectoryPath() async {
-  // On web, Isar uses IndexedDB — no filesystem directory needed
-  return '';
+  throw UnsupportedError('Cannot get directory path on Web');
+}
+
+Future<void> recoverDatabase() async {
+  // Web does not need file-based database recovery
 }

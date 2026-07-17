@@ -62,6 +62,34 @@ class NumberFormatter {
     }
   }
 
+  /// Generic area/quantity formatting: up to 4 decimal places, removes trailing zeros.
+  /// E.g. 45000.0 → "45,000"  |  1.6534 → "1.6534"  |  1.50 → "1.5"
+  static String format(double value) {
+    if (value.isNaN || value.isInfinite) return '0';
+    if (value == 0) return '0';
+    // Check if it's a whole number
+    if (value == value.truncateToDouble()) {
+      try {
+        final formatter = NumberFormat('#,##,###', 'en_IN');
+        return formatter.format(value.toInt());
+      } catch (_) {
+        return value.toInt().toString();
+      }
+    }
+    // Has decimals — up to 4 places, trim trailing zeros
+    String s = value.toStringAsFixed(4);
+    s = s.replaceAll(RegExp(r'0+$'), '').replaceAll(RegExp(r'\.$'), '');
+    // Add comma grouping for the integer part
+    final parts = s.split('.');
+    try {
+      final formatter = NumberFormat('#,##,###', 'en_IN');
+      final intPart = formatter.format(int.tryParse(parts[0]) ?? 0);
+      return parts.length > 1 ? '$intPart.${parts[1]}' : intPart;
+    } catch (_) {
+      return s;
+    }
+  }
+
   /// Simplistic double parsing that handles empty strings or trailing dots gracefully
   static double parseDouble(String val) {
     if (val.isEmpty) return 0.0;

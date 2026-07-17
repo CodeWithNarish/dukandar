@@ -12,6 +12,7 @@ import '../../presentation/screens/product_library/product_library_screen.dart';
 import '../../presentation/screens/history/history_screen.dart';
 import '../../presentation/screens/shop_profile/shop_profile_screen.dart';
 import '../../presentation/screens/settings/settings_screen.dart';
+import '../../presentation/screens/land_calculator/land_calculator_screen.dart';
 import '../../presentation/widgets/common/platform_preview_shell.dart';
 
 final GoRouter appRouter = GoRouter(
@@ -61,6 +62,10 @@ final GoRouter appRouter = GoRouter(
         GoRoute(
           path: '/settings',
           builder: (context, state) => const SettingsScreen(),
+        ),
+        GoRoute(
+          path: '/land-calculator',
+          builder: (context, state) => const LandCalculatorScreen(),
         ),
       ],
     ),

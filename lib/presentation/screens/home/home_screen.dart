@@ -288,6 +288,13 @@ class HomeScreen extends ConsumerWidget {
         color: Colors.purple,
         route: '/products',
       ),
+      _GridItem(
+        titleKey: 'land_calc',
+        subtitleKey: 'land_calc_sub',
+        icon: Icons.grass_rounded,
+        color: const Color(0xFF2E7D32),
+        route: '/land-calculator',
+      ),
     ];
 
     return GridView.builder(

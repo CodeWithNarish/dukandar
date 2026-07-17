@@ -27,7 +27,9 @@ class LocalizationHelper {
       'gst_calc_sub': 'Add or remove GST instantly',
       'prod_lib': 'Product Library',
       'prod_lib_sub': 'Save frequent item prices',
-      
+      'land_calc': 'Smart Land Calculator',
+      'land_calc_sub': 'Bigha • Acre • Hectare instantly',
+
       // Screen labels & inputs
       'product_name': 'Product Name',
       'product_name_hint': 'e.g., Rice, Sugar, Oil',
@@ -139,6 +141,8 @@ class LocalizationHelper {
       'gst_calc_sub': 'तुरंत GST जोड़ें या हटाएं',
       'prod_lib': 'सामान की सूची',
       'prod_lib_sub': 'रोज के सामान के दाम सेव करें',
+      'land_calc': 'स्मार्ट जमीन कैलकुलेटर',
+      'land_calc_sub': 'बीघा • एकड़ • हेक्टेयर मापें',
       
       // Screen labels & inputs
       'product_name': 'सामान का नाम',

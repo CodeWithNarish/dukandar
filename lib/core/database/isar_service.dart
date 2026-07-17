@@ -22,16 +22,40 @@ class IsarService {
       isar = mockDb;
     } else {
       final dirPath = await getDirectoryPath();
-      isar = await Isar.open(
-        [
-          ProductModelSchema,
-          HistoryModelSchema,
-          ShopProfileModelSchema,
-          SettingsModelSchema,
-        ],
-        directory: dirPath,
-        name: 'dukandar_db',
-      );
+      try {
+        isar = await Isar.open(
+          [
+            ProductModelSchema,
+            HistoryModelSchema,
+            ShopProfileModelSchema,
+            SettingsModelSchema,
+          ],
+          directory: dirPath,
+          name: 'dukandar_db',
+          inspector: false, // Prevents certain issues in release mode
+        );
+      } catch (e) {
+        print('❌ Isar initialization failed: $e');
+        if (e.toString().contains('Collection id is invalid') || e.toString().contains('IllegalArg')) {
+          print('🔧 Detected schema mismatch — attempting recovery...');
+          await recoverDatabase();
+          // Retry
+          isar = await Isar.open(
+            [
+              ProductModelSchema,
+              HistoryModelSchema,
+              ShopProfileModelSchema,
+              SettingsModelSchema,
+            ],
+            directory: dirPath,
+            name: 'dukandar_db',
+            inspector: false,
+          );
+          print('✅ Recovery successful — fresh database created');
+        } else {
+          rethrow;
+        }
+      }
     }
 
     // Seed defaults

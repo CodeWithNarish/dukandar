@@ -6,7 +6,7 @@ part of 'product_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$favoriteProductsHash() => r'5ac59f221d405413b23b23cbc294dee42f233dd1';
+String _$favoriteProductsHash() => r'73380eb770f48a3c4c0afd4cc0eeade1bf6ed3d6';
 
 /// See also [favoriteProducts].
 @ProviderFor(favoriteProducts)
@@ -22,7 +22,7 @@ final favoriteProductsProvider =
 );
 
 typedef FavoriteProductsRef = AutoDisposeFutureProviderRef<List<ProductModel>>;
-String _$productListHash() => r'b0bfefd4a47d96fb0b7b9ef1191f658dd93ebd0b';
+String _$productListHash() => r'5e7aee66509c41da9f5c03e9826957ddd980d32c';
 
 /// See also [ProductList].
 @ProviderFor(ProductList)
