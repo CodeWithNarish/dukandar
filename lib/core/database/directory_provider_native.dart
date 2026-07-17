@@ -11,18 +11,45 @@ Future<String> getDirectoryPath() async {
 
 Future<void> recoverDatabase() async {
   try {
-    final dir = await getApplicationDocumentsDirectory();
-    final dbFile = File('${dir.path}/dukandar_db.isar');
-    final lockFile = File('${dir.path}/dukandar_db.isar.lock');
+    final dirPath = await getDirectoryPath();
     
-    if (await dbFile.exists()) {
-      await dbFile.delete();
-      print('🗑️ Deleted corrupted database file');
+    Future<void> safeDelete(String path) async {
+      final file = File(path);
+      final dir = Directory(path);
+      
+      if (await file.exists()) {
+        try {
+          await file.delete();
+          print('🗑️ Deleted file: $path');
+        } catch (e) {
+          print('⚠️ Delete file failed, trying rename fallback: $e');
+          try {
+            final newPath = '$path.bak_${DateTime.now().millisecondsSinceEpoch}';
+            await file.rename(newPath);
+            print('🔄 Renamed file to: $newPath');
+          } catch (renameError) {
+            print('❌ Rename file failed: $renameError');
+          }
+        }
+      } else if (await dir.exists()) {
+        try {
+          await dir.delete(recursive: true);
+          print('🗑️ Deleted directory: $path');
+        } catch (e) {
+          print('⚠️ Delete directory failed, trying rename fallback: $e');
+          try {
+            final newPath = '$path.bak_${DateTime.now().millisecondsSinceEpoch}';
+            await dir.rename(newPath);
+            print('🔄 Renamed directory to: $newPath');
+          } catch (renameError) {
+            print('❌ Rename directory failed: $renameError');
+          }
+        }
+      }
     }
-    
-    if (await lockFile.exists()) {
-      await lockFile.delete();
-    }
+
+    await safeDelete('$dirPath/dukandar_db.isar');
+    await safeDelete('$dirPath/dukandar_db.isar.lock');
   } catch (e) {
     print('❌ Native Recovery failed: $e');
   }
